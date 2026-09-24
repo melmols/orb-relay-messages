@@ -37,6 +37,37 @@ pub mod common {
         use blake3::Hasher;
         use thiserror::Error;
 
+        impl std::fmt::Display for AnnounceAppId {
+            fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+                let app_data = self.app_data.as_ref();
+                std::fmt::Display::fmt(
+                    &serde_json::json!({
+                        "protocol_version": self.protocol_version,
+                        "heartbeat": self.heartbeat,
+                        "is_test": self.is_test,
+                        "has_app_data": app_data.is_some(),
+                        "has_appointment_metadata": self.appointment_metadata.is_some(),
+                        "has_p2p_node_info": self.p2p_node_info.is_some(),
+                        "os": app_data.map(|data| data.os.as_str()),
+                        "os_version": app_data.map(|data| data.os_version.as_str()),
+                        "pcp_version": app_data.map(|data| data.pcp_version),
+                        "app_data_version": app_data.map(|data| data.version),
+                        "has_encrypted_ipcp_payload": self.encrypted_ipcp_payload.is_some(),
+                        "has_integrity_token": !self.integrity_token.is_empty(),
+                        "has_integrity_signature": !self.integrity_signature.is_empty(),
+                        "has_bypass_age_verification_token": !self.bypass_age_verification_token.is_empty(),
+                    }),
+                    f,
+                )
+            }
+        }
+
+        impl std::fmt::Debug for AnnounceAppId {
+            fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+                std::fmt::Display::fmt(self, f)
+            }
+        }
+
         /// Default PCP version value.
         const PCP_VERSION_DEFAULT: u32 = 2;
 
