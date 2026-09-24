@@ -7,6 +7,7 @@ fn main() {
     }
     let mut config = prost_build::Config::new();
     config
+        .skip_debug([".common.v1.AnnounceAppId"])
         .enable_type_names()
         .type_name_domain(["."], "type.googleapis.com")
         .message_attribute(
